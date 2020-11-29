@@ -5,7 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def split_image(image_pair):
-    height, width_pair = image_pair.shape
+    height = image_pair.shape[0]
+    width_pair = image_pair.shape[1]
     width = int(width_pair/2)
 
     image_left = image_pair[0:height, 0:width]
@@ -168,11 +169,13 @@ def create_SBM (sbm_config):
     return sbm
 
 def compute_3dImage(sbm, image_pair, left_map_1, left_map_2, right_map_1, right_map_2, Q): 
-    image_pair = cv2.cvtColor(image_pair,cv2.COLOR_BGR2GRAY)
     image_left, image_right, _ = split_image(image_pair)
+    
+    gray_left = cv2.cvtColor(image_left,cv2.COLOR_BGR2GRAY)
+    gray_right = cv2.cvtColor(image_right,cv2.COLOR_BGR2GRAY)
 
-    rectified_image_left = cv2.remap(image_left, left_map_1, left_map_2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
-    rectified_image_right = cv2.remap(image_right, right_map_1, right_map_2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+    rectified_image_left = cv2.remap(gray_left, left_map_1, left_map_2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+    rectified_image_right = cv2.remap(gray_right, right_map_1, right_map_2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 
     disparity = sbm.compute(rectified_image_left, rectified_image_right).astype(np.float32) / 16.0
     _3dImage = cv2.reprojectImageTo3D(disparity, Q)
