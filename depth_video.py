@@ -45,18 +45,19 @@ frame_height = int (camera_height * scale_ratio)
 frame_buffer = np.zeros((frame_height, frame_width, 4), dtype=np.uint8)
 
 # Display Distance and Disparity Map
-display_distance = True
+display_distance = False
 disp_max = -100000
 disp_min = 100000
 
 # Odometry capture
-odometry_sample_capture = False
-odometry_samples = 50
+odometry_sample_capture = True
+odometry_samples = 51
 odometry_sample_counter = 0
 odometry_sample_interval = 1000
 odometry_image_dir = './odometry_data/images/'
 odometry_depth_dir = './odometry_data/depths/'
 odometry_last_sample_time = time.time()*1000
+
 
 for frame in camera.capture_continuous(frame_buffer, format="bgra", use_video_port=True, resize=(frame_width, frame_height)):
     
@@ -74,7 +75,6 @@ for frame in camera.capture_continuous(frame_buffer, format="bgra", use_video_po
         else:
             distance = "invalid"
 
-        image_left = cv2.cvtColor(image_left,cv2.COLOR_GRAY2RGB)
         image_left = cv2.rectangle(image_left, (155,115), (165,125), (0, 255, 0), thickness=2)
     
         cv2.putText(image_left, str(distance), (100,200),
