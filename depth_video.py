@@ -4,21 +4,6 @@ import numpy as np
 import json
 from picamera import PiCamera
 from stereo_camera import *
-from detect import *
-import tflite_runtime.interpreter as tflite
-
-EDGETPU_SHARED_LIB = {
-  'Linux': 'libedgetpu.so.1',
-  'Darwin': 'libedgetpu.1.dylib',
-  'Windows': 'edgetpu.dll'
-}[platform.system()]
-
-def make_interpreter(model_file):
-    return tflite.Interpreter(
-      model_path=model_file,
-      experimental_delegates=[
-          tflite.load_delegate(EDGETPU_SHARED_LIB, {})
-      ])
 
 # Camera settimgs
 camera_width = 1280
