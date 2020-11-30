@@ -53,14 +53,14 @@ disp_min = 100000
 odometry_sample_capture = True
 odometry_samples = 51
 odometry_sample_counter = 0
-odometry_sample_interval = 1000
+odometry_sample_interval = 250
 odometry_image_dir = './odometry_data/images/'
 odometry_depth_dir = './odometry_data/depths/'
 odometry_last_sample_time = time.time()*1000
 
 
 for frame in camera.capture_continuous(frame_buffer, format="bgra", use_video_port=True, resize=(frame_width, frame_height)):
-    
+ 
     _3dImage, disparity, image_left, _ = compute_3dImage(sbm, frame, left_map_1, left_map_2, right_map_1, right_map_2, Q)
 
     depth_map = _3dImage[:,:,2]
@@ -93,7 +93,6 @@ for frame in camera.capture_continuous(frame_buffer, format="bgra", use_video_po
     cv2.imshow("Image", image_left)    
     
     if (odometry_sample_capture and (time.time()*1000-odometry_last_sample_time > odometry_sample_interval)):
-        t1 = time.time()*1000
         odometry_sample_counter += 1
         odometry_last_sample_time = time.time()*1000
         zeros = "0" * (5 - len(str(odometry_sample_counter)))
