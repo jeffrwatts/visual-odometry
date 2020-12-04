@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-def split_image(image_pair):
+def split_image(image_pair, hflip):
     height = image_pair.shape[0]
     width_pair = image_pair.shape[1]
     width = int(width_pair/2)
@@ -12,9 +12,12 @@ def split_image(image_pair):
     image_left = image_pair[0:height, 0:width]
     image_right = image_pair[0:height, width:width_pair]
     
-    return image_left, image_right, (width, height)
+    if (hflip):
+        return image_left, image_right, (width, height)
+    else:
+        return image_right, image_left, (width, height)
 
-def get_corners (image_search, checker_def, scale_ratio = 1):
+def get_corners (image_search, checker_def, scale_ratio, hflip):
     columns = checker_def[0]
     rows = checker_def[1]
     square_size = checker_def[2]
@@ -33,7 +36,7 @@ def get_corners (image_search, checker_def, scale_ratio = 1):
     for image_filename in images:
         image_pair = cv2.imread(image_filename, cv2.IMREAD_COLOR)
         image_pair = cv2.cvtColor(image_pair,cv2.COLOR_BGR2GRAY)
-        image_left, image_right, (width, height) = split_image(image_pair)
+        image_left, image_right, (width, height) = split_image(image_pair, hflip)
 
         # Find the chess board corners
         flags = cv2.CALIB_CB_ADAPTIVE_THRESH+cv2.CALIB_CB_FAST_CHECK+cv2.CALIB_CB_NORMALIZE_IMAGE
@@ -62,6 +65,7 @@ def get_corners (image_search, checker_def, scale_ratio = 1):
 
 def calibrate_cameras(object_points, left_image_points, right_image_points, image_dims):
     calibration_data = {}
+    calibration_data['image_dims'] = image_dims
 
      # Calibrate Left Camera
     (rms_left, left_camera_matrix, 
@@ -134,8 +138,10 @@ def calibrate_cameras(object_points, left_image_points, right_image_points, imag
     calibration_data['Q']  = Q 
     return calibration_data
 
-def save_calibration_data (calibration_data, calibration_file):
-    np.savez(calibration_file, 
+def save_calibration_data (calibration_data, hflip, calibration_file):
+    np.savez(calibration_file,
+    hflip=hflip,
+    image_dims = calibration_data['image_dims'],
     rms_left = calibration_data['rms_left'], 
     left_camera_matrix = calibration_data['left_camera_matrix'],
     left_dist_coeffs = calibration_data['left_dist_coeffs'],
@@ -168,8 +174,8 @@ def create_SBM (sbm_config):
 
     return sbm
 
-def compute_3dImage(sbm, image_pair, left_map_1, left_map_2, right_map_1, right_map_2, Q): 
-    image_left, image_right, _ = split_image(image_pair)
+def compute_3dImage(sbm, image_pair, left_map_1, left_map_2, right_map_1, right_map_2, Q, hflip): 
+    image_left, image_right, _ = split_image(image_pair, hflip)
     
     gray_left = cv2.cvtColor(image_left,cv2.COLOR_BGR2GRAY)
     gray_right = cv2.cvtColor(image_right,cv2.COLOR_BGR2GRAY)

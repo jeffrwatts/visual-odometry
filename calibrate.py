@@ -1,11 +1,18 @@
 from stereo_camera import *
 import matplotlib.pyplot as plt
 
-image_search = './calibrate_images/*.png'
+hflip = False
+
+image_dir = './calibrate_images'
+
+if (hflip):
+    image_dir = image_dir + '_hflip'
+
+image_search = image_dir +  '/*.png'
 checker_def = (9,6,40) # 9x6 checkerboard; 40mm square size.
 scale_ratio = 0.5
 
-object_points, left_image_points, right_image_points, scaled_image_dims = get_corners (image_search, checker_def, scale_ratio)
+object_points, left_image_points, right_image_points, scaled_image_dims = get_corners (image_search, checker_def, scale_ratio, hflip)
 
 calibration_data = calibrate_cameras(object_points, left_image_points, right_image_points, scaled_image_dims)
 
@@ -41,11 +48,12 @@ left_map_2 = calibration_data['left_map_2']
 right_map_1 = calibration_data['right_map_1']
 right_map_2 = calibration_data['right_map_2']
 
-image_filename = 'test.jpg'
+image_filename = image_dir + '/test.jpg'
+print(image_filename)
 
 image_pair = cv2.imread(image_filename, cv2.IMREAD_COLOR)
 image_pair = cv2.cvtColor(image_pair, cv2.COLOR_BGR2GRAY)
-image_left, image_right, _ = split_image(image_pair)
+image_left, image_right, _ = split_image(image_pair, hflip)
 
 rectified_image_left = cv2.remap(image_left, left_map_1, left_map_2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 rectified_image_right = cv2.remap(image_right, right_map_1, right_map_2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
@@ -57,7 +65,7 @@ image_cells[1].imshow(rectified_image_right)
 image_cells[1].set_title('right image')
 plt.show()
 
-save_calibration_data(calibration_data, 'calibration_data.npz')
+save_calibration_data(calibration_data, hflip, image_dir + '/calibration_data.npz')
 
 
 

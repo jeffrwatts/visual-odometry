@@ -12,12 +12,18 @@ camera_height = 480
 
 # Scaling settings
 scale_ratio = 0.5
+hflip = False
+
+image_dir = './calibrate_images'
+
+if (hflip):
+    image_dir = image_dir + '_hflip'
 
 # Initialize the camera
 camera = PiCamera(stereo_mode='side-by-side',stereo_decimate=False)
 camera.resolution=(camera_width, camera_height)
 camera.framerate = 20
-camera.hflip = True
+camera.hflip = hflip
 
 # Initialize interface windows
 cv2.namedWindow("Image")
@@ -25,8 +31,9 @@ cv2.moveWindow("Image", 50,100)
 cv2.namedWindow("Disparity")
 cv2.moveWindow("Disparity", 450,100)
 
-calibration_data = np.load('calibration_data.npz')
-        
+calibration_data = np.load(image_dir + '/calibration_data.npz')
+   
+hflip = calibration_data['hflip']
 left_map_1 = calibration_data['left_map_1']
 left_map_2 = calibration_data['left_map_2']
 right_map_1 = calibration_data['right_map_1']
@@ -45,12 +52,12 @@ frame_height = int (camera_height * scale_ratio)
 frame_buffer = np.zeros((frame_height, frame_width, 4), dtype=np.uint8)
 
 # Display Distance and Disparity Map
-display_distance = False
+display_distance = True
 disp_max = -100000
 disp_min = 100000
 
 # Odometry capture
-odometry_sample_capture = True
+odometry_sample_capture = False
 odometry_samples = 51
 odometry_sample_counter = 0
 odometry_sample_interval = 250
@@ -61,7 +68,7 @@ odometry_last_sample_time = time.time()*1000
 
 for frame in camera.capture_continuous(frame_buffer, format="bgra", use_video_port=True, resize=(frame_width, frame_height)):
  
-    _3dImage, disparity, image_left, _ = compute_3dImage(sbm, frame, left_map_1, left_map_2, right_map_1, right_map_2, Q)
+    _3dImage, disparity, image_left, _ = compute_3dImage(sbm, frame, left_map_1, left_map_2, right_map_1, right_map_2, Q, hflip)
 
     depth_map = _3dImage[:,:,2]
     depth_map[depth_map < 0] = 0.0

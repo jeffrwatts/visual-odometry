@@ -2,8 +2,15 @@ import json
 from stereo_camera import *
 import matplotlib.pyplot as plt
 
-calibration_data = np.load('calibration_data.npz')
+hflip = False
+image_dir = './calibrate_images'
+
+if (hflip):
+    image_dir = image_dir + '_hflip'
+
+calibration_data = np.load(image_dir + '/calibration_data.npz')
         
+hflip = calibration_data['hflip']
 left_map_1 = calibration_data['left_map_1']
 left_map_2 = calibration_data['left_map_2']
 right_map_1 = calibration_data['right_map_1']
@@ -16,10 +23,10 @@ with open('sbm_config.json') as sbm_config_file:
     
 sbm = create_SBM(sbm_config)
 
-image_filename = 'test.jpg'
+image_filename = image_dir + '/test.jpg'
 image_pair = cv2.imread(image_filename, cv2.IMREAD_COLOR)
 
-_3dImage, disparity, _, _ = compute_3dImage(sbm, image_pair, left_map_1, left_map_2, right_map_1, right_map_2, Q)
+_3dImage, disparity, _, _ = compute_3dImage(sbm, image_pair, left_map_1, left_map_2, right_map_1, right_map_2, Q, hflip)
 
 local_max = disparity.max()
 local_min = disparity.min()
