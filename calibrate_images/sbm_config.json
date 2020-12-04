@@ -3,9 +3,9 @@
     "minDisparity":0,
     "numberOfDisparities":48,
     "preFilterCap":29,
-    "preFilterSize":7,
-    "speckleRange":14,
-    "speckleWindowSize":99,
+    "preFilterSize":5,
+    "speckleRange":15,
+    "speckleWindowSize":100,
     "textureThreshold":13,
     "uniquenessRatio":3
 }

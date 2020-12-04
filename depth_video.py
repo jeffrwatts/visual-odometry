@@ -18,6 +18,8 @@ image_dir = './calibrate_images'
 
 if (hflip):
     image_dir = image_dir + '_hflip'
+    
+conifgJsonFile = image_dir + '/sbm_config.json'
 
 # Initialize the camera
 camera = PiCamera(stereo_mode='side-by-side',stereo_decimate=False)
@@ -41,7 +43,7 @@ right_map_2 = calibration_data['right_map_2']
 Q = calibration_data['Q']
 print(Q)
 
-with open('sbm_config.json') as sbm_config_file:
+with open(conifgJsonFile) as sbm_config_file:
     sbm_config = json.load(sbm_config_file)
     
 sbm = create_SBM(sbm_config)
