@@ -52,7 +52,7 @@ class DatasetHandler:
             zeroes = "0" * (5 - len(str(i)))
             depth_name = "{0}/frame_{1}{2}.npy".format(self.depth_dir, zeroes, str(i))
             depth = np.load(depth_name)
-            depth [ depth == 0] = 200000
+            depth [ depth == 0] = 50000
             self.depth_maps.append(depth)
             print ("Data loading: {0}%".format(int(i / (self.num_frames * 2 - 1) * 100)), end="\r")
             
