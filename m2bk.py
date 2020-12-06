@@ -14,7 +14,7 @@ class DatasetHandler:
 
     def __init__(self):
         # Define number of frames
-        self.num_frames = 52
+        self.num_frames = 151
 
         # Set up paths
         root_dir_path = os.path.dirname(os.path.realpath(__file__))
