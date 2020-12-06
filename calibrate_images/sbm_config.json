@@ -1,7 +1,6 @@
 {
-    "SADWindowSize":7,
     "minDisparity":0,
-    "numberOfDisparities":96,
+    "numberOfDisparities":48,
     "preFilterCap":29,
     "preFilterSize":5,
     "speckleRange":15,
