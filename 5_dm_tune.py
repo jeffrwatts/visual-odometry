@@ -37,7 +37,7 @@ import json
 import time
 from stereo_camera import *
 
-hflip = True
+hflip = False
 
 image_dir = './calibrate_images'
 
@@ -48,8 +48,6 @@ if (hflip):
 image_filename = image_dir + '/test.jpg'
 config_json_filename = image_dir + '/sbm_config.json'
 
-config_json_filename
-
 photo_width = 640
 photo_height = 240
 image_width = 320
@@ -58,7 +56,7 @@ image_height = 240
 image_size = (image_width,image_height)
 
 if os.path.isfile(image_filename) == False:
-    print ('Can not read image from file \"'+imageToDisp+'\"')
+    print ('Can not read image from file \"'+image_filename+'\"')
     # No image! Let's take it...
     print ("Taking photo...")
     camera = PiCamera(stereo_mode='side-by-side',stereo_decimate=False)
@@ -70,7 +68,7 @@ if os.path.isfile(image_filename) == False:
 
 # Read image and split it in a stereo pair
 print('Read and split image...')
-pair_img = cv2.imread(imageToDisp,0)
+pair_img = cv2.imread(image_filename,0)
 imgLeft, imgRight, _ = split_image(pair_img, hflip)
 
 # Implementing calibration data
@@ -170,7 +168,7 @@ def save_map_settings( event ):
              'minDisparity':MDS, 'numberOfDisparities':NOD, 'textureThreshold':TTH, \
              'uniquenessRatio':UR, 'speckleRange':SR, 'speckleWindowSize':SPWS},\
              sort_keys=True, indent=4, separators=(',',':'))
-    fName = conifgJsonFile
+    fName = config_json_filename
     f = open (str(fName), 'w') 
     f.write(result)
     f.close()
@@ -185,7 +183,7 @@ buttonl = Button(loadax, 'Load settings', color=axcolor, hovercolor='0.975')
 def load_map_settings( event ):
     global SWS, PFS, PFC, MDS, NOD, TTH, UR, SR, SPWS, loading_settings
     loading_settings = 1
-    fName = conifgJsonFile
+    fName = config_json_filename
     print('Loading parameters from file...')
     buttonl.label.set_text ("Loading...")
     f=open(fName, 'r')
