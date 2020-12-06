@@ -164,7 +164,7 @@ buttons = Button(saveax, 'Save settings', color=axcolor, hovercolor='0.975')
 def save_map_settings( event ):
     buttons.label.set_text ("Saving...")
     print('Saving to file...') 
-    result = json.dumps({'SADWindowSize':SWS, 'preFilterSize':PFS, 'preFilterCap':PFC, \
+    result = json.dumps({'preFilterSize':PFS, 'preFilterCap':PFC, \
              'minDisparity':MDS, 'numberOfDisparities':NOD, 'textureThreshold':TTH, \
              'uniquenessRatio':UR, 'speckleRange':SR, 'speckleWindowSize':SPWS},\
              sort_keys=True, indent=4, separators=(',',':'))
@@ -188,7 +188,7 @@ def load_map_settings( event ):
     buttonl.label.set_text ("Loading...")
     f=open(fName, 'r')
     data = json.load(f)
-    sSWS.set_val(data['SADWindowSize'])
+    #sSWS.set_val(data['SADWindowSize'])
     sPFS.set_val(data['preFilterSize'])
     sPFC.set_val(data['preFilterCap'])
     sMDS.set_val(data['minDisparity'])
@@ -216,7 +216,7 @@ dmObject = plt.imshow(disparity, aspect='equal', cmap='jet')
 # Draw interface for adjusting parameters
 print('Start interface creation (it takes up to 30 seconds)...')
 
-SWSaxe = plt.axes([0.15, 0.01, 0.7, 0.025], facecolor=axcolor) #stepX stepY width height 
+#SWSaxe = plt.axes([0.15, 0.01, 0.7, 0.025], facecolor=axcolor) #stepX stepY width height 
 PFSaxe = plt.axes([0.15, 0.05, 0.7, 0.025], facecolor=axcolor) #stepX stepY width height 
 PFCaxe = plt.axes([0.15, 0.09, 0.7, 0.025], facecolor=axcolor) #stepX stepY width height 
 MDSaxe = plt.axes([0.15, 0.13, 0.7, 0.025], facecolor=axcolor) #stepX stepY width height 
@@ -226,7 +226,7 @@ URaxe = plt.axes([0.15, 0.25, 0.7, 0.025], facecolor=axcolor) #stepX stepY width
 SRaxe = plt.axes([0.15, 0.29, 0.7, 0.025], facecolor=axcolor) #stepX stepY width height
 SPWSaxe = plt.axes([0.15, 0.33, 0.7, 0.025], facecolor=axcolor) #stepX stepY width height
 
-sSWS = Slider(SWSaxe, 'SWS', 5.0, 255.0, valinit=5)
+#sSWS = Slider(SWSaxe, 'SWS', 5.0, 255.0, valinit=5)
 sPFS = Slider(PFSaxe, 'PFS', 5.0, 255.0, valinit=5)
 sPFC = Slider(PFCaxe, 'PreFiltCap', 5.0, 63.0, valinit=29)
 sMDS = Slider(MDSaxe, 'MinDISP', -100.0, 100.0, valinit=-25)
@@ -240,7 +240,7 @@ sSPWS = Slider(SPWSaxe, 'SpklWinSze', 0.0, 300.0, valinit=100)
 # Update depth map parameters and redraw
 def update(val):
     global SWS, PFS, PFC, MDS, NOD, TTH, UR, SR, SPWS
-    SWS = int(sSWS.val/2)*2+1 #convert to ODD
+    #SWS = int(sSWS.val/2)*2+1 #convert to ODD
     PFS = int(sPFS.val/2)*2+1
     PFC = int(sPFC.val/2)*2+1    
     MDS = int(sMDS.val)    
@@ -258,7 +258,7 @@ def update(val):
 
 
 # Connect update actions to control elements
-sSWS.on_changed(update)
+#sSWS.on_changed(update)
 sPFS.on_changed(update)
 sPFC.on_changed(update)
 sMDS.on_changed(update)
